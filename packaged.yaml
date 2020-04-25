@@ -7,18 +7,15 @@ Globals:
     BinaryMediaTypes:
     - '*/*'
 Resources:
-  ChartLambdaNativeFunction:
+  ChartLambdaFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: not.used.in.provided.runtimei
-      Runtime: provided
-      CodeUri: s3://quarkuslabdabucket/ef4605b4f2d87d978b27b7e8d6a17399
-      MemorySize: 128
+      Handler: io.quarkus.amazon.lambda.runtime.QuarkusStreamHandler::handleRequest
+      Runtime: java8
+      CodeUri: s3://quarkuslabdabucket/262ac3d95f98d6688797634d8e397a5d
+      MemorySize: 512
       Policies: AWSLambdaBasicExecutionRole
       Timeout: 15
-      Environment:
-        Variables:
-          DISABLE_SIGNAL_HANDLERS: true
       Events:
         GetResource:
           Type: Api
@@ -26,9 +23,9 @@ Resources:
             Path: /{proxy+}
             Method: any
 Outputs:
-  ChartLambdaNativeApi:
+  ChartLambdaApi:
     Description: URL for application
     Value:
       Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/
     Export:
-      Name: ChartLambdaNativeApi
+      Name: ChartLambdaApi
