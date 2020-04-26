@@ -8,6 +8,11 @@
         - "*/*"
 
   Resources:
+    ApiGatewayApi:
+      Type: AWS::Serverless::Api
+      Properties:
+        StageName: prod
+
     ChartLambdaFunction:
       Type: AWS::Serverless::Function
       Properties:
@@ -18,15 +23,21 @@
         Policies: AWSLambdaBasicExecutionRole
         Timeout: 15
         Events:
-          GetResource:
+          GetChartSummary:
             Type: Api
             Properties:
-              Path: /{proxy+}
-              Method: any
-
+              RestApiId: !Ref ApiGatewayApi
+              Path: /chart
+              Method: GET
+          GetChartForCountry:
+            Type: Api
+            Properties:
+              RestApiId: !Ref ApiGatewayApi
+              Path: /chart/{countryName}
+              Method: GET
   Outputs:
     ChartLambdaApi:
       Description: URL for application
-      Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/'
+      Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/prod/chart'
       Export:
         Name: ChartLambdaApi

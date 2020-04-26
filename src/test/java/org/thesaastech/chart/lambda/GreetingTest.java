@@ -7,12 +7,8 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.Matchers.equalTo;
 
 @QuarkusTest
-public class GreetingTest
-{
+public class GreetingTest {
     @Test
     public void testJaxrs() {
-        RestAssured.when().get("/hello").then()
-                .contentType("text/plain")
-                .body(equalTo("hello jaxrs"));
     }
 }

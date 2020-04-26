@@ -1,4 +1,4 @@
-package org.thesaastech.chart.lambda;
+package org.thesaastech.chart.lambda.service;
 
 
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;

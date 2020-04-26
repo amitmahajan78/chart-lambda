@@ -7,25 +7,43 @@ Globals:
     BinaryMediaTypes:
     - '*/*'
 Resources:
-  ChartLambdaFunction:
+  ApiGatewayApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+  ChartLambdaNativeFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: io.quarkus.amazon.lambda.runtime.QuarkusStreamHandler::handleRequest
-      Runtime: java8
-      CodeUri: s3://quarkuslabdabucket/262ac3d95f98d6688797634d8e397a5d
+      Handler: not.used.in.provided.runtimei
+      Runtime: provided
+      CodeUri: s3://quarkuslabdabucket/7df19e72fd3a79344c607e7a6039eb95
       MemorySize: 512
-      Policies: AWSLambdaBasicExecutionRole
-      Timeout: 15
+      Policies:
+      - AWSLambdaBasicExecutionRole
+      - AmazonS3FullAccess
+      Timeout: 20
+      Environment:
+        Variables:
+          DISABLE_SIGNAL_HANDLERS: true
       Events:
-        GetResource:
+        GetChartSummary:
           Type: Api
           Properties:
-            Path: /{proxy+}
-            Method: any
+            RestApiId:
+              Ref: ApiGatewayApi
+            Path: /chart
+            Method: GET
+        GetChartForCountry:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: ApiGatewayApi
+            Path: /chart/{countryName}
+            Method: GET
 Outputs:
-  ChartLambdaApi:
+  ChartLambdaNativeApi:
     Description: URL for application
     Value:
-      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/
+      Fn::Sub: https://${ApiGatewayApi}.execute-api.${AWS::Region}.amazonaws.com/prod/chart
     Export:
-      Name: ChartLambdaApi
+      Name: ChartLambdaNativeApi
